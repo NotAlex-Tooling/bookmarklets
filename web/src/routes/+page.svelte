@@ -29,7 +29,6 @@
 	let bookmarklets = $state<Bookmarklet[]>([]);
 	let search = $state('');
 	let showModal = $state(false);
-	let theme = $state<'light' | 'dark'>('light');
 
 	// Extracts the // title: "..." value from a bookmarklet source file.
 	function parseTitle(src: string): string {
@@ -132,20 +131,6 @@
 		return `${b.title} ${b.desc} ${b.platformLabel}`.toLowerCase().includes(q);
 	}
 
-	// Applies a theme to the document, syncs local state, and persists the choice.
-	function setTheme(next: 'light' | 'dark') {
-		theme = next;
-		document.documentElement.dataset.theme = next;
-		try {
-			localStorage.setItem('theme', next);
-		} catch {}
-	}
-
-	// Toggles between the light and dark themes.
-	function toggleTheme() {
-		setTheme(theme === 'dark' ? 'light' : 'dark');
-	}
-
 	// Closes the install modal when Escape is pressed.
 	function onKey(e: KeyboardEvent) {
 		if (e.key === 'Escape') showModal = false;
@@ -153,10 +138,7 @@
 
 	const filtered = $derived(bookmarklets.filter(matchesSearch));
 
-	onMount(() => {
-		theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-		discover();
-	});
+	onMount(discover);
 </script>
 
 <svelte:head>
@@ -186,23 +168,6 @@
 				<a class="btn" href="https://markletsmith.notalex.sh/" target="_blank" rel="noopener">
 					Make your own
 				</a>
-				<button
-					class="btn btn-icon"
-					onclick={toggleTheme}
-					aria-label="Switch to {theme === 'dark' ? 'light' : 'dark'} mode"
-					title="Switch to {theme === 'dark' ? 'light' : 'dark'} mode"
-				>
-					{#if theme === 'dark'}
-						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<circle cx="12" cy="12" r="4" />
-							<path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-						</svg>
-					{:else}
-						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-						</svg>
-					{/if}
-				</button>
 			</div>
 		</header>
 
@@ -309,27 +274,6 @@
 
 <style>
 	:global(:root) {
-		--bg: #f4f6f9;
-		--bg-grad: radial-gradient(1200px 600px at 50% -12%, #eaeff5 0%, #f4f6f9 58%);
-		--fg: #161a20;
-		--fg-strong: #0b0d10;
-		--fg-muted: #5a626d;
-		--fg-dim: #8b93a0;
-		--surface: #ffffff;
-		--surface-2: #eef2f7;
-		--border: #e2e7ee;
-		--border-strong: #d3dae3;
-		--accent: #0e9f6e;
-		--accent-glow: rgba(16, 185, 129, 0.26);
-		--accent-soft: rgba(16, 185, 129, 0.1);
-		--ring: rgba(16, 185, 129, 0.32);
-		--shadow-card: 0 1px 2px rgba(20, 28, 40, 0.05), 0 12px 32px rgba(20, 28, 40, 0.1);
-		--shadow-hover: 0 2px 6px rgba(20, 28, 40, 0.08), 0 22px 54px rgba(20, 28, 40, 0.17);
-		--glow-hover: 0 0 0 1px rgba(16, 185, 129, 0.22), 0 0 38px rgba(16, 185, 129, 0.16);
-		--foot-border: #e2e7ee;
-	}
-
-	:global([data-theme='dark']) {
 		--bg: #0a0a0c;
 		--bg-grad: radial-gradient(1200px 700px at 50% -15%, rgba(52, 211, 153, 0.07), transparent 60%), #0a0a0c;
 		--fg: #e8e8ec;
@@ -468,16 +412,6 @@
 	}
 	.btn:active {
 		transform: translateY(0);
-	}
-	.btn-icon {
-		padding: 8px;
-		width: 34px;
-	}
-	.btn-icon svg {
-		transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.55, 1);
-	}
-	.btn-icon:hover svg {
-		transform: rotate(35deg);
 	}
 	.btn-block {
 		width: 100%;
