@@ -55,11 +55,3 @@ If a bookmarklet ever returns outdated results, drag it again from the site to g
 account owner never sees you in their viewer list.
 
 Each tool also has a `*.bookmarklet.txt` file containing its ready-to-paste `javascript:…` URL.
-
----
-
-<div align="center">
-  <a href="https://github.com/NotAlex-Tooling/">Tooling by NotAlex</a> ·
-  <a href="https://github.com/NotAlex-Tooling/bookmarklets">source code</a> ·
-  by <a href="https://notalex.sh">notalex.sh</a>
-</div>
